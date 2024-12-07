@@ -1,7 +1,9 @@
 package com.ticlavilca.abigail.laboratorio
 
 import android.content.Intent
+import android.media.MediaScannerConnection
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -87,7 +89,7 @@ class MainActivity : AppCompatActivity() {
     private fun takePhoto() {
         imageCapture?.let { capture ->
             val fileName = "JPEG_${System.currentTimeMillis()}.jpg"
-            val file = File(getExternalFilesDir(null), fileName)
+            val file = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName)
             val outputFileOptions = ImageCapture.OutputFileOptions.Builder(file).build()
 
             capture.takePicture(
@@ -96,6 +98,7 @@ class MainActivity : AppCompatActivity() {
                 object : ImageCapture.OnImageSavedCallback {
                     override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                         Log.i(TAG, "The image has been saved in ${file.absolutePath}")
+                        MediaScannerConnection.scanFile(this@MainActivity, arrayOf(file.absolutePath), null, null)
                     }
 
                     override fun onError(exception: ImageCaptureException) {
